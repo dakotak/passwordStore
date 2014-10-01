@@ -1,6 +1,7 @@
 {
 	"requrire": {
 		"slim/lim": "2.*",
-		"slim/views": "0.1.*"
+		"slim/views": "0.1.*",
+		"twig/twig": "1.16.*"
 	}
 }
