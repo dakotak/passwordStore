@@ -10,10 +10,15 @@ echo "PHP Version: " . phpversion() . "<br />";
 // Make sure mcrypt extentions are enabled.
 
 // PDO is required and PDO must support SQLite v3 or up
-if(class_exists('PDO'){
+if(!extension_loaded("PDO")){
     echo "<b>PDO is not avalible.</b><br />";
 }else{
     echo "PDO is avalible.<br />";
 }
 // Check SQLite support
+echo "<ul>";
+foreach (PDO::getAvailableDrivers() as $driver){
+    echo "<li>$driver</li>";
+}
+echo "</ul>";
 
