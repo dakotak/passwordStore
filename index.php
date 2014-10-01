@@ -12,13 +12,12 @@ $app = new \Slim\Slim(array(
 ));
 
 // Configure Twig
-$view = $app->view();
-$view->parserOptions = array(
-	'debug' => true	
-);
-
+$app->view->parserOptions = array('debug' => true);
 $view->parserExtentions = array(new \Slim\Views\TwigExtension());
 
-
+// Define Application Routes
+$app->get('/', function(){
+	echo "Hello, testing!";
+});
 
 $app->run();
