@@ -21,6 +21,9 @@ if(isset($_GET['action']){
         case "install";
             dbinstall();
             break;
+        case "showTables":
+            dbShowTables();
+            break;
         case default:
             echo "Action not found!";
             break;
@@ -44,4 +47,9 @@ function dbinstall(){
         title TEXT,
         password BLOB
     )");
+}
+
+function dbShowTables(){
+    // List all the tables in the database
+
 }
