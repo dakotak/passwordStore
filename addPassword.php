@@ -36,19 +36,22 @@ echo "Key Lenght: " . strlen($key) . "<br />";
 echo "Password is strong: $strong<br />";
 
 // Creaste the Initilazation vector for encryption
-$iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
+$ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+$iv = mcrypt_create_iv($ivSize);
 echo "Initilization Vector: " . base64_encode($iv) . "<br />";
 echo "Initilization Vector Lenght: "  . strlen(base64_encode($iv)) . "<br />";
+echo "IV Size: $ivSize<br />";
 
 $encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $password, MCRYPT_MODE_CBC, $iv);
 
 echo "Encrypted Password: " . base64_encode($encrypted) . "<br />";
 echo "Encrypted Password Lenght: " . strlen(base64_encode($encrypted)) . "<br />";
+echo "No Encode Encrypted Password Length: " . strlen($encrypted) . "<br />";
 
 // Combine the IV and the encrypted password togetther for storage, the IV is okay to store with the encrypted data.
-$encryptedPassword = base64_encode($iv) . base64_encode($encrypted);
-
-echo "End Result Encrypted Password: $encryptedPassword - Lenght: " . strlen($encryptedPassword) . "<br />";
+//$encryptedPassword = base64_encode($iv) . base64_encode($encrypted);
+//echo "End Result Encrypted Password: $encryptedPassword - Lenght: " . strlen($encryptedPassword) . "<br />";
+$encrypted = $iv . $encrypted;
 
 echo "<hr>";
 
@@ -89,7 +92,13 @@ if($decryptedKey = $key){
     echo base64_encode($key);
 }
 
+// Split the ecrypted password into the ecrypted data and the IV
+$iv = substr($encrypted, 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
+$encryptedPass = substr($encrypted, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
+
+echo "IV: " . base64_encode($iv) . "<br />";
+echo "Encrypted Password: " . base64_encode($encryptedPass) . "<br />";
 // Use the decrypted key to decrypt the password
-$decryptedPass = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedKey, $encrypted, MCRYPT_MODE_CBC, $iv);
+$decryptedPass = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedKey, $encryptedPass, MCRYPT_MODE_CBC, $iv);
 
 echo "Decrypted Password: $decryptedPass<br />";
