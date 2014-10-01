@@ -35,5 +35,26 @@ include 'db.php';
                 </tr>
             </table>
         </div>
+        <div>
+            <form action="addUser.php" method="post">
+                Add User
+                <input type="text" name="username" />
+                <input type="submit" />
+            </form>
+            <table>
+                <tr><th>ID</th><th>Username</th><th>Public Key</th><th>Private Key</th></tr>
+                <?php
+                $users = $db->query("SELECT * FROM users");
+                foreach($users as $user){
+                    echo "<tr>";
+                    echo "<td>" . $user['id'] . "</td>";
+                    echo "<td>" . $user['username'] . "</td>";
+                    echo "<td>" . $user['publicKey'] . "</td>";
+                    echo "<td>" . $user['privateKey'] . "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </table>
+        </div>
     </body>
 </html>
