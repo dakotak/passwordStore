@@ -38,10 +38,17 @@ echo "Password is strong: $strong<br />";
 // Creaste the Initilazation vector for encryption
 $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
 echo "Initilization Vector: " . base64_encode($iv) . "<br />";
+echo "Initilization Vector Lenght: "  . strlen(base64_encode($iv)) . "<br />";
 
 $encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $password, MCRYPT_MODE_CBC, $iv);
 
 echo "Encrypted Password: " . base64_encode($encrypted) . "<br />";
+echo "Encrypted Password Lenght: " . strlen(base64_encode($encrypted)) . "<br />";
+
+// Combine the IV and the encrypted password togetther for storage, the IV is okay to store with the encrypted data.
+$encryptedPassword = base64_encode($iv) . base64_encode($encrypted);
+
+echo "End Result Encrypted Password: $encryptedPassword - Lenght: " . strlen($encryptedPassword) . "<br />";
 
 echo "<hr>";
 
@@ -53,11 +60,36 @@ $config = array(
 );
 
 $res = openssl_pkey_new($config);
+
+// Get Public Key for pair
 openssl_pkey_export($res, $privateKey);
 $publicKey = openssl_pkey_get_details($res);
-
+$publicKey = $publicKey['key'];
 echo "<pre>";
-print_r($publicKey);
+echo "Public Key: $publicKey<br />";
+echo "Private Key: $privateKey<br />";
 echo "</pre>";
 
+echo "<hr>";
+// Encrypt the key for the password encryption with the public key.
+openssl_public_encrypt($key, $encryptedKey, $publicKey);
 
+echo "Encrypted Encryption Key: " . base64_encode($encryptedKey) . "<br />";
+
+echo "<hr>";
+// Decrypt the encrypted decryption key
+openssl_private_decrypt($encryptedKey, $decryptedKey, $privateKey);
+
+// decryptedKey should match $key
+if($decryptedKey = $key){
+    echo "They match!<br />";
+}else{
+    echo "Error:<br />";
+    echo base64_encode($decryptedKey);
+    echo base64_encode($key);
+}
+
+// Use the decrypted key to decrypt the password
+$decryptedPass = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedKey, $encrypted, MCRYPT_MODE_CBC, $iv);
+
+echo "Decrypted Password: $decryptedPass<br />";
