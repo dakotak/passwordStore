@@ -16,8 +16,8 @@ $app->view->parserOptions = array('debug' => true);
 $view->parserExtentions = array(new \Slim\Views\TwigExtension());
 
 // Define Application Routes
-$app->get('/', function(){
-	echo "Hello, testing!";
+$app->get('/', function() use ($app){
+    $app->render('home.twig');
 });
 
 $app->run();
