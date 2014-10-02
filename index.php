@@ -19,5 +19,16 @@ $view->parserExtentions = array(new \Slim\Views\TwigExtension());
 $app->get('/', function() use ($app){
     $app->render('home.twig');
 });
+$app->group('/user', function() use ($app){
+    $app->get('/add', function() use ($app){
+        $app->render('userAdd.twig');
+    });
+    // Handle the form submition
+    $app->post('/add', function() use ($app){
+        // Add user
+    });
+});
+
+
 
 $app->run();
