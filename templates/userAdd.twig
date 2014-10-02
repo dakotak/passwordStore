@@ -1,0 +1,9 @@
+{% extends "master.twig" %}
+
+{% block content %}
+    <h1>Add User</h1>
+    <form action="user/add" method="post">
+        User Name: <input type="text" name="username" />
+        <input type="submit" />
+    </form>
+{% endblock %}
